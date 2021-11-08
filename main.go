@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -13,6 +15,17 @@ var token string
 
 func init() {
 	token = os.Getenv("TOKEN")
+
+	// Read dice configs from dice.json
+	if err := initDiceConfig(); err != nil {
+		// Exit if the config is broken
+		os.Exit(1)
+	}
+
+	initDiceRegex()
+
+	// Seed random to avoid same results
+	rand.Seed(time.Now().UnixNano())
 }
 
 func main() {
