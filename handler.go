@@ -12,7 +12,9 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	if _, err := s.ChannelMessageSend(m.ChannelID, "hello world"); err != nil {
+	msg := fmt.Sprintf("<@%s> %s", m.Message.Author.ID, "Hello world!")
+
+	if _, err := s.ChannelMessageSend(m.ChannelID, msg); err != nil {
 		fmt.Println("ERROR: Send message: ", err)
 		return
 	}
