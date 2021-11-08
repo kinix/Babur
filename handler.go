@@ -17,6 +17,11 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		content := rollDice(dice, side, addition)
 		sendMessage(s, m, content)
 	}
+
+	if measurements := checkMessageForConverting(m.Message.Content); len(measurements) > 0 {
+		content := convertUnits(measurements)
+		sendMessage(s, m, content)
+	}
 }
 
 func sendMessage(s *discordgo.Session, m *discordgo.MessageCreate, content string) {

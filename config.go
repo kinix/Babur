@@ -37,3 +37,25 @@ func initDiceConfig() error {
 	fmt.Println("Dice are ready.")
 	return nil
 }
+
+func initUnitConfig() error {
+	// Open config file
+	cfgFile, err := os.Open("config/units.json")
+	if err != nil {
+		fmt.Println("ERROR: Read unit.cfg: ", err)
+		return err
+	}
+
+	defer cfgFile.Close()
+
+	// Read and parse json file
+	bytes, _ := ioutil.ReadAll(cfgFile)
+	err = json.Unmarshal(bytes, &units)
+	if err != nil {
+		fmt.Println("ERROR: Parse unit.cfg: ", err)
+		return err
+	}
+
+	fmt.Println("Converter is ready.")
+	return nil
+}

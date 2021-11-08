@@ -22,7 +22,14 @@ func init() {
 		os.Exit(1)
 	}
 
+	// Read converter configs from units.json
+	if err := initUnitConfig(); err != nil {
+		// Exit if the config is broken
+		os.Exit(1)
+	}
+
 	initDiceRegex()
+	initUnitRegex()
 
 	// Seed random to avoid same results
 	rand.Seed(time.Now().UnixNano())
