@@ -56,7 +56,7 @@ func rollDice(count int, side int, addition int) string {
 		return fmt.Sprintf("Sorry, I don't have %d dice.", count)
 	}
 
-	if side > maxDiceSide {
+	if side > maxDiceSide || side < 1 {
 		return fmt.Sprintf("Sorry, I don't have any %d sided dice.", side)
 	}
 
