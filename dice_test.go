@@ -54,3 +54,58 @@ func TestRollDice(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkCheckMessageForDice(b *testing.B) {
+	initDiceTest()
+
+	b.Run("Invalid short text", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			checkMessageForDice("Roll")
+		}
+	})
+
+	b.Run("Invalid long text", func(b *testing.B) {
+		text := "Something else"
+		for len(text) < 2000 {
+			text += text
+		}
+
+		for i := 0; i < b.N; i++ {
+			checkMessageForDice(text)
+		}
+	})
+
+	b.Run("Valid text", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			checkMessageForDice("8d20 +1")
+		}
+	})
+}
+
+func BenchmarkRollDice(b *testing.B) {
+	initDiceTest()
+
+	b.Run("1d20", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			rollDice(1, 2, 0)
+		}
+	})
+
+	b.Run("2d20", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			rollDice(2, 20, 0)
+		}
+	})
+
+	b.Run("8d20", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			rollDice(8, 2, 0)
+		}
+	})
+
+	b.Run("8d20 +6", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			rollDice(8, 2, 6)
+		}
+	})
+}

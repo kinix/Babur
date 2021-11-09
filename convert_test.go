@@ -81,3 +81,96 @@ func TestConvertUnits(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkCheckMessageForConverting(b *testing.B) {
+	initConvertTest()
+
+	b.Run("Invalid short text", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			checkMessageForConverting("Convert")
+		}
+	})
+
+	b.Run("Invalid long text", func(b *testing.B) {
+		text := "Something else"
+		for len(text) < 2000 {
+			text += text
+		}
+
+		for i := 0; i < b.N; i++ {
+			checkMessageForConverting(text)
+		}
+	})
+
+	b.Run("Single valid short text", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			checkMessageForConverting("10 feet")
+		}
+	})
+
+	b.Run("Single valid long text", func(b *testing.B) {
+		text := "Something else"
+		for len(text) < 2000 {
+			text += text
+		}
+		text += "10 feet"
+
+		for i := 0; i < b.N; i++ {
+			checkMessageForConverting(text)
+		}
+	})
+
+	b.Run("Multiple valid long text", func(b *testing.B) {
+		text := "Something else 10 feet"
+		for len(text) < 2000 {
+			text += text
+		}
+		text += "10 feet"
+
+		for i := 0; i < b.N; i++ {
+			checkMessageForConverting(text)
+		}
+	})
+}
+
+func BenchmarkConvertUnits(b *testing.B) {
+	initConvertTest()
+
+	b.Run("Single simple", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			convertUnits([]rawMeasurement{
+				{1, "feet"},
+			})
+		}
+	})
+
+	b.Run("Multiple simple", func(b *testing.B) {
+		list := []rawMeasurement{}
+		for i := 0; i < 100; i++ {
+			list = append(list, rawMeasurement{float64(i), "feet"})
+		}
+
+		for i := 0; i < b.N; i++ {
+			convertUnits(list)
+		}
+	})
+
+	b.Run("Single big", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			convertUnits([]rawMeasurement{
+				{1000000, "feet"},
+			})
+		}
+	})
+
+	b.Run("Multiple big", func(b *testing.B) {
+		list := []rawMeasurement{}
+		for i := 0; i < 100; i++ {
+			list = append(list, rawMeasurement{float64(i) * 1000000, "feet"})
+		}
+
+		for i := 0; i < b.N; i++ {
+			convertUnits(list)
+		}
+	})
+}
