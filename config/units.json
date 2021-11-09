@@ -4,6 +4,7 @@
     "ft": {"unit": "cm", "multiplier": 30.48},
 
     "pound": {"unit": "gram", "multiplier": 453.592},
+    "lbs": {"unit": "gram", "multiplier": 453.592},
 
     "inch": {"unit": "cm", "multiplier": 2.54},
     "in": {"unit": "cm", "multiplier": 2.54},
