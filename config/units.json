@@ -1,12 +1,18 @@
 {
     "feet": {"unit": "cm", "multiplier": 30.48},
+    "foot": {"unit": "cm", "multiplier": 30.48},
     "ft": {"unit": "cm", "multiplier": 30.48},
+
+    "pound": {"unit": "gram", "multiplier": 453.592},
+
     "inch": {"unit": "cm", "multiplier": 2.54},
     "in": {"unit": "cm", "multiplier": 2.54},
+
     "mile": {"unit": "cm", "multiplier": 160934},
     "mi": {"unit": "cm", "multiplier": 160934},
+
     "yard": {"unit": "cm", "multiplier": 91.44},
-    "pound": {"unit": "gram", "multiplier": 453.592},
+
     "_cm": {"unit": "m", "multiplier": 0.01},
     "_m": {"unit": "km", "multiplier": 0.001},
     "_gram": {"unit": "kg", "multiplier": 0.001}
