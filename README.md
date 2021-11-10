@@ -4,6 +4,8 @@ Babür is a discord bot created for personal purposes.
 
 The bot's capabilities are rolling dice and converting some imperial units to metric units.
 
+In addition, Babür can answer some questions with random responses. (this feature is WIP)
+
 ## Installing
 
 Create an app in Discord Developer Portal. Set the token of that app as `TOKEN` environment variable.
@@ -12,11 +14,17 @@ Invite the bot into your channel and TADA! He's ready for your messages.
 
 ## Configiration
 
-You can change maximum dice count and side number from `config/dice.json`
+You can change maximum dice count and side number in `config/dice.json`
 
-You can change or add units from `config/units.json`
+You can change or add units in `config/units.json`
 
 The units with `_` prefix are being used for only convert between metric units (e.g. cm to m)
+
+### Chat config
+
+You can change or add regex for categories in `chat_regex.json`
+
+You can change or add responses in `chat.json`. You have to have same groups with `chat_regex.json` in this file. In addition you have to the group `_' to respond unmatched messages.
 
 ## Usage
 

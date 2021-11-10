@@ -1,7 +1,9 @@
 package main
 
 import (
+	"babur/chat"
 	"fmt"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -10,6 +12,15 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore messages from the bot itself
 	if m.Author.ID == s.State.User.ID {
 		return
+	}
+
+	// If some one mentioned Babür
+	if strings.Contains(m.Message.Content, s.State.User.ID) {
+		// Use chat (maybe we can add more language in future. maybe...)
+		msg := strings.ReplaceAll(m.Message.Content, "<@!"+s.State.User.ID+">", "")
+		if content := chat.ChatHandler(m.Author.ID, msg); content != "" {
+			sendMessage(s, m, content)
+		}
 	}
 
 	// Does the message have any dice text?
