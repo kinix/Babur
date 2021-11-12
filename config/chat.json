@@ -1,11 +1,11 @@
 {
     "yesNo": [
-        {"weight": 100, "response": "Evet"},
-        {"weight": 100, "response": "Hayır"},
-        {"weight": 20, "response": "Belki"},
+        {"weight": 200, "response": "Evet"},
+        {"weight": 200, "response": "Hayır"},
+        {"weight": 10, "response": "Belki"},
         {"weight": 10, "response": "Bilmem"},
-        {"weight": 10, "response": ":thumbsup:"},
-        {"weight": 10, "response": ":thumbsdown:"},
+        {"weight": 3, "response": ":thumbsup:"},
+        {"weight": 3, "response": ":thumbsdown:"},
         {"weight": 1, "response": "Ben nerden bileyim be!"}
     ],
     "count": [
