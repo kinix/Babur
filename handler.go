@@ -31,8 +31,16 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
+	// Does the message have any unit?
 	if measurements := checkMessageForConverting(m.Message.Content); len(measurements) > 0 {
 		content := convertUnits(measurements)
+		sendMessage(s, m, content)
+		return
+	}
+
+	// Does the message start with !dnd
+	if len(m.Message.Content) > 5 && m.Message.Content[0:5] == "!dnd " {
+		content := searchDnd(m.Message.Content[5:])
 		sendMessage(s, m, content)
 		return
 	}

@@ -30,6 +30,7 @@ func init() {
 
 	initDiceRegex()
 	initUnitRegex()
+	initDndRegex()
 
 	// Seed random to avoid same results
 	rand.Seed(time.Now().UnixNano())
