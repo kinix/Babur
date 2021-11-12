@@ -20,6 +20,7 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		msg := strings.ReplaceAll(m.Message.Content, "<@!"+s.State.User.ID+">", "")
 		if content := chat.ChatHandler(m.Author.ID, msg); content != "" {
 			sendMessage(s, m, content)
+			return
 		}
 	}
 
@@ -27,11 +28,13 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if dice, side, addition := checkMessageForDice(m.Message.Content); dice > 0 {
 		content := rollDice(dice, side, addition)
 		sendMessage(s, m, content)
+		return
 	}
 
 	if measurements := checkMessageForConverting(m.Message.Content); len(measurements) > 0 {
 		content := convertUnits(measurements)
 		sendMessage(s, m, content)
+		return
 	}
 }
 
