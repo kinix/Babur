@@ -14,6 +14,14 @@
         {"weight": 3, "response": "Çok"}
     ],
     "_": [
-        {"weight": 1, "response": "Anlamadım :cry:"}
+        {"weight": 100, "response": "Anlamadım :cry:"},
+        {"weight": 1, "response": "Dünya 5'ten büyüktür!"},
+        {"weight": 1, "response": "Yahu sen kimsin ya!"},
+        {"weight": 1, "response": "One minutes!"},
+        {"weight": 1, "response": "One minutes!"},
+        {"weight": 1, "response": "2009'u yazarken iki sıfır var 9'un yanındaki sıfır solda sildiniz kaldı mı 9\n2'nin yanında bir sıfır var onu da sildiniz kaldı mı 2 toplayın ne yapar?\n11 yapar. 2009'daki sıfırlar sildiniz ne kaldı 29 kaldı. 11'le 29'u toplayın 40 yapar!"},
+        {"weight": 1, "response": "Dolarla mı maaş alıyorsun?"},
+        {"weight": 1, "response": "Telefonunu çıkar göster!"},
+        {"weight": 1, "response": "Benim bu serverda kurulu düzenim var, yoksa dönerdim yeğenim."}
     ]
 }
