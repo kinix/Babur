@@ -14,7 +14,7 @@ import (
 var token string
 
 func init() {
-	token = os.Getenv("TOKEN")
+	token = os.Getenv("BABUR_TOKEN")
 
 	// Read dice configs from dice.json
 	if err := initDiceConfig(); err != nil {
