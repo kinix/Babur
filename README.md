@@ -4,6 +4,8 @@ Babür is a discord bot created for personal purposes.
 
 The bot's capabilities are rolling dice and converting some imperial units to metric units.
 
+If you want to learn something about DnD, Babür can find an URL to learn it.
+
 In addition, Babür can answer some questions with random responses. (this feature is WIP)
 
 ## Installing
@@ -41,3 +43,7 @@ Example formats:
 ### Converting Units
 
 If your messages contains any imperial units in `config/units.json`, Babür will convert the measurements to metric units.
+
+### DnD Search
+
+If your messages starts with !dnd, Babür will search the message and find a link contain the info you searched.
