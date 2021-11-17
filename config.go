@@ -11,8 +11,7 @@ func initDiceConfig() error {
 	// Open config file
 	cfgFile, err := os.Open("config/dice.json")
 	if err != nil {
-		fmt.Println("ERROR: Read dice.cfg: ", err)
-		return err
+		return fmt.Errorf("ERROR: Read dice.cfg: %s", err)
 	}
 
 	defer cfgFile.Close()
@@ -27,8 +26,7 @@ func initDiceConfig() error {
 	bytes, _ := ioutil.ReadAll(cfgFile)
 	err = json.Unmarshal(bytes, &diceCfg)
 	if err != nil {
-		fmt.Println("ERROR: Parse dice.cfg: ", err)
-		return err
+		return fmt.Errorf("ERROR: Parse dice.cfg: %s", err)
 	}
 
 	maxDiceCount = diceCfg.MaxCount
@@ -42,8 +40,7 @@ func initUnitConfig() error {
 	// Open config file
 	cfgFile, err := os.Open("config/units.json")
 	if err != nil {
-		fmt.Println("ERROR: Read unit.cfg: ", err)
-		return err
+		return fmt.Errorf("ERROR: Read unit.cfg: %s", err)
 	}
 
 	defer cfgFile.Close()
@@ -52,8 +49,7 @@ func initUnitConfig() error {
 	bytes, _ := ioutil.ReadAll(cfgFile)
 	err = json.Unmarshal(bytes, &units)
 	if err != nil {
-		fmt.Println("ERROR: Parse unit.cfg: ", err)
-		return err
+		return fmt.Errorf("ERROR: Parse unit.cfg: %s", err)
 	}
 
 	fmt.Println("Converter is ready.")

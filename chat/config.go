@@ -12,8 +12,7 @@ import (
 func initAnswerConfig() error {
 	cfgFile, err := os.Open("config/chat.json")
 	if err != nil {
-		fmt.Println("ERROR: Read chat.cfg: ", err)
-		return err
+		return fmt.Errorf("ERROR: Read chat.cfg: %s", err)
 	}
 
 	defer cfgFile.Close()
@@ -22,8 +21,7 @@ func initAnswerConfig() error {
 	bytes, _ := ioutil.ReadAll(cfgFile)
 	err = json.Unmarshal(bytes, &answerList)
 	if err != nil {
-		fmt.Println("ERROR: Parse chat.cfg: ", err)
-		return err
+		return fmt.Errorf("ERROR: Parse chat.cfg: %s", err)
 	}
 
 	return nil
@@ -32,8 +30,7 @@ func initAnswerConfig() error {
 func initRegexConfig() error {
 	cfgFile, err := os.Open("config/chat_regex.json")
 	if err != nil {
-		fmt.Println("ERROR: Read chat_regex.cfg: ", err)
-		return err
+		return fmt.Errorf("ERROR: Read chat_regex.cfg: %s", err)
 	}
 
 	defer cfgFile.Close()
@@ -44,8 +41,7 @@ func initRegexConfig() error {
 	bytes, _ := ioutil.ReadAll(cfgFile)
 	err = json.Unmarshal(bytes, &regexConfig)
 	if err != nil {
-		fmt.Println("ERROR: Parse chat_regex.cfg: ", err)
-		return err
+		return fmt.Errorf("ERROR: Parse chat_regex.cfg: %s", err)
 	}
 
 	regexList = map[string]*regexp.Regexp{}

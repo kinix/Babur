@@ -20,11 +20,11 @@ var weightList map[string]int
 
 func init() {
 	if err := initAnswerConfig(); err != nil {
-		os.Exit(1)
+		panic(err)
 	}
 
 	if err := initRegexConfig(); err != nil {
-		os.Exit(1)
+		panic(err)
 	}
 
 	weightList = map[string]int{}

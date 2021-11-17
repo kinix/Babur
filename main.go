@@ -19,13 +19,13 @@ func init() {
 	// Read dice configs from dice.json
 	if err := initDiceConfig(); err != nil {
 		// Exit if the config is broken
-		os.Exit(1)
+		panic(err)
 	}
 
 	// Read converter configs from units.json
 	if err := initUnitConfig(); err != nil {
 		// Exit if the config is broken
-		os.Exit(1)
+		panic(err)
 	}
 
 	initDiceRegex()
