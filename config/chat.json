@@ -38,14 +38,16 @@
         {"weight": 1, "response": ":yellow_heart:"},
         {"weight": 1, "response": ":orange_heart:"}
     ],
+    "dolar": [
+        {"weight": 5, "response": "Dolarla borcun mu var?\nDolarla mı maaş alıyorsun?"},
+        {"weight": 3, "response": "Benim bu serverda kurulu düzenim var, yoksa dönerdim yeğenim."}
+    ],
     "_": [
         {"weight": 40, "response": "Anlamadım :cry:"},
         {"weight": 30, "response": "Anlayamadım :cry:"},
         {"weight": 10, "response": "Sorunu anlayamadım Bu bir soru mu ondan bile emin değilim. :cry:"},
         {"weight": 10, "response": "Bedava serverda çalıştığım için işlemcim bu tarz sorular için yeterli değil."},
-        {"weight": 1, "response": "Yahu sen kimsin ya!"},
-        {"weight": 1, "response": "Dolarla borcun mu var?\nDolarla mı maaş alıyorsun?"},
-        {"weight": 1, "response": "Benim bu serverda kurulu düzenim var, yoksa dönerdim yeğenim."}
+        {"weight": 1, "response": "Yahu sen kimsin ya!"}
     ],
     "_?": [
         {"weight": 1, "response": "Anlamadım :cry:"},
