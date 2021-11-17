@@ -13,6 +13,12 @@
         {"weight": 5, "response": "Bilmem"},
         {"weight": 3, "response": "Çok"}
     ],
+    "purpose": [
+        {"weight": 1, "response": "Ben Babür. Senin için zar atabilirim (3d20, d6+2...), bazı birimleri metrik sisteme çevirebilirim (3 feet, 5.2 lbs...) ya da bazı dnd konuları hakkında bilgi alabileceğin linkler bulabilirim (!dnd mage hand...). Ayrıca beni mentionladığın bazı sorularına rastgele cevap verebilirim (@Babür geldin mi?, @Babür çayı kaç şeker ile içersin?), ama bu özelliğim çok iyi çalışmayabilir."},
+        {"weight": 3, "response": "Selam. Benim adım Babür. :slight_smile: \nİstersen senin için zar atabilirim (3d20, d6+2...), bazı birimleri metrik sisteme çevirebilirim (3 feet, 5.2 lbs...) ya da bazı dnd konuları hakkında bilgi alabileceğin linkler bulabilirim (!dnd mage hand...). Ayrıca beni mentionladığın bazı sorularına rastgele cevap verebilirim (@Babür geldin mi?, @Babür çayı kaç şeker ile içersin?), ama bu özelliğim çok iyi çalışmayabilir."},
+        {"weight": 2, "response": "Biip boop beep. Benim adım Babür, ben bir botum. :robot: \n- Zar atabilirim (3d20, d6+2...)\n- Bazı birimleri metrik sisteme çevirebilirim (3 feet, 5.2 lbs...)\n- Bazı dnd konuları hakkında bilgi alabileceğin linkler bulabilirim (!dnd mage hand...)\n- Ayrıca beni mentionladığın bazı sorularına rastgele cevap verebilirim (@Babür geldin mi?, @Babür çayı kaç şeker ile içersin?), ama bu özelliğim çok iyi çalışmayabilir."},
+        {"weight": 10, "response": "Selam, benim adım Babür. :smiley:  \nİstersen senin için şunlardan birini yapabilirim:\n- Zar atmak (3d20, d6+2...)\n- Bazı birimleri metrik sisteme çevirmek (3 feet, 5.2 lbs...)\n- Bazı dnd konuları hakkında bilgi alabileceğin linkler bulmak (!dnd mage hand...).\n\nAyrıca beni mentionladığın bazı sorularına rastgele cevap verebilirim (@Babür geldin mi?, @Babür çayı kaç şeker ile içersin?), ama bu özelliğim çok iyi çalışmayabilir."}
+    ],
     "_": [
         {"weight": 100, "response": "Anlamadım :cry:"},
         {"weight": 1, "response": "Dünya 5'ten büyüktür!"},

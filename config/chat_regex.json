@@ -1,4 +1,5 @@
 {
     "yesNo": ".* (mı|mi|mu|mü).*\\?",
-    "count": ".*(kaç).*\\?"
+    "count": ".*(kaç).*\\?",
+    "purpose": ".*((ne|hangi|kim).*(yap|amacın|sen)|(yap|amacın|sen).*(ne|hangi|kim)).*\\?"
 }
