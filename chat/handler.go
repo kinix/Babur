@@ -27,6 +27,10 @@ func init() {
 		panic(err)
 	}
 
+	if err := validateConfig(); err != nil {
+		panic(err)
+	}
+
 	weightList = map[string]int{}
 	for key, value := range answerList {
 		weightList[key] = 0

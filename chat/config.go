@@ -3,6 +3,7 @@ package chat
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -47,6 +48,24 @@ func initRegexConfig() error {
 	regexList = map[string]*regexp.Regexp{}
 	for key, value := range regexConfig {
 		regexList[key] = regexp.MustCompile(value)
+	}
+
+	return nil
+}
+
+func validateConfig() error {
+	for key := range regexList {
+		if _, found := answerList[key]; !found {
+			return fmt.Errorf("ERROR: Answer key is not found: %s", key)
+		}
+	}
+
+	if _, found := answerList["_"]; !found {
+		return errors.New("ERROR: Answer key is not found: _")
+	}
+
+	if _, found := answerList["_?"]; !found {
+		return errors.New("ERROR: Answer key is not found: _?")
 	}
 
 	return nil
