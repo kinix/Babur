@@ -8,7 +8,7 @@ In addition, Babür can answer some questions with random responses. (WIP - Samp
 
 ## Installing
 
-Create an app in Discord Developer Portal. Set the token of that app as `TOKEN` environment variable.
+Create an app in Discord Developer Portal. Set the token of that app as `BABUR_TOKEN` environment variable.
 
 Invite the bot into your channel and TADA! He's ready for your messages.
 
@@ -18,11 +18,19 @@ You can change maximum dice count and side number in `config/dice.json`
 
 You can change or add units in `config/units.json`. The units with `_` prefix are being used for only convert between metric units (e.g. cm to m)
 
-### Chat config
+### Chat Config
 
 You can change or add regex for categories in `chat_regex.json`
 
-You can change or add responses in `chat.json`. You have to have same groups with `chat_regex.json` in this file. In addition you have to the group `_' to respond unmatched messages.
+You can change or add responses in `chat.json`. You have to have same groups with `chat_regex.json` in this file.
+
+In addition you have to the special groups groups which are `_?` and `_` to respond unmatched messages. `_?` is for the messages with question mark. `_` is for the others.
+
+### Image Search
+
+If you want to use Google Image search in your chat functions, you have to define `GOOGLE_TOKEN` and `GOOGLE_CX` environment variables.
+
+For more information: https://developers.google.com/custom-search/v1/introduction
 
 ## Usage
 

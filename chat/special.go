@@ -2,9 +2,27 @@
 package chat
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"math/rand"
+	"net/http"
+	"net/url"
+	"strings"
 )
+
+const imageSearchUrl = "https://www.googleapis.com/customsearch/v1?key=%s&searchType=image&cx=%s&q=%s"
+const imageMaxCount = 10 // API returns 10 at max
+
+var googleToken, googleCx string
+
+type imageResponse struct {
+	Items []imageItem
+}
+
+type imageItem struct {
+	Link string
+}
 
 // If response begins with %%, Babür can do some calculations to respond
 // This function get fullMsg as parameter. It is useless for now, but it can be used in future (maybe image search?)
@@ -22,6 +40,53 @@ func specialResponse(specialType string, fullMsg string) string {
 		} else {
 			return fmt.Sprint(luckyNumber % 10)
 		}
+	case "imageSearch":
+		// If token or cx is not defined, image search will not work
+		if googleToken == "" || googleCx == "" {
+			return ""
+		}
+
+		// Prepare text for query
+		fullMsg = strings.Trim(fullMsg, " .?-")
+		fullMsg = url.QueryEscape(fullMsg)
+
+		// Do the search request
+		url := fmt.Sprintf(imageSearchUrl, googleToken, googleCx, fullMsg)
+		resp, err := http.Get(url)
+		if err != nil {
+			fmt.Println("ERROR: Image search request: ", err)
+			return ""
+		}
+
+		defer resp.Body.Close()
+
+		var imageList imageResponse
+
+		// Read the body
+		respBytes, err2 := io.ReadAll(resp.Body)
+		if err2 != nil {
+			fmt.Println("ERROR: Image search read: ", err)
+			return ""
+		}
+
+		// Parse the body
+		json.Unmarshal(respBytes, &imageList)
+
+		// If image count is less than expected, set new limit
+		imageCount := imageMaxCount
+		if imageCount > len(imageList.Items) {
+			imageCount = len(imageList.Items)
+		}
+
+		// If there is no result, return empty string
+		if imageCount == 0 {
+			fmt.Println("ERROR: Image search result: No result")
+			return ""
+		}
+
+		// Pick a random image
+		luckyNumber := rand.Intn(imageCount)
+		return imageList.Items[luckyNumber].Link
 	}
 
 	return ""

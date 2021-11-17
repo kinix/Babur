@@ -45,7 +45,12 @@
         {"weight": 10, "response": "Bedava serverda çalıştığım için işlemcim bu tarz sorular için yeterli değil."},
         {"weight": 1, "response": "Yahu sen kimsin ya!"},
         {"weight": 1, "response": "Dolarla borcun mu var?\nDolarla mı maaş alıyorsun?"},
-        {"weight": 1, "response": "Çıkar telefonunu göster!"},
         {"weight": 1, "response": "Benim bu serverda kurulu düzenim var, yoksa dönerdim yeğenim."}
+    ],
+    "_?": [
+        {"weight": 1, "response": "Anlamadım :cry:"},
+        {"weight": 1, "response": "Anlayamadım :cry:"},
+        {"weight": 1, "response": "Sorunu anlayamadım :cry:"},
+        {"weight": 10, "response": "%%imageSearch"}
     ]
 }

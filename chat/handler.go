@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"os"
 	"regexp"
+	"strings"
 )
 
 type answer struct {
@@ -35,6 +36,10 @@ func init() {
 		}
 	}
 
+	// Read env values for google image search
+	googleToken = os.Getenv("GOOGLE_TOKEN")
+	googleCx = os.Getenv("GOOGLE_CX")
+
 	fmt.Println("Chat is ready.")
 }
 
@@ -50,7 +55,12 @@ func ChatHandler(owner string, msg string) string {
 		}
 	}
 
-	// There is no match
+	// There is no match and it is a question
+	if strings.Contains(msg, "?") {
+		return chooseAnswer("_?", msg)
+	}
+
+	// There is no match and it is not a question
 	return chooseAnswer("_", msg)
 }
 
