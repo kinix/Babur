@@ -1,17 +1,55 @@
-package main
+package dice
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"math/rand"
+	"os"
 	"regexp"
 	"strconv"
 )
 
-var maxDiceCount, maxDiceSide int
-var diceRegex *regexp.Regexp
+type DiceHandler struct {
+	maxDiceCount int
+	maxDiceSide  int
+	diceRegex    *regexp.Regexp
+}
+
+func NewDiceHandler(configFile string) (*DiceHandler, error) {
+	// Open config file
+	cfgFile, err := os.Open(configFile)
+	if err != nil {
+		return nil, fmt.Errorf("ERROR: Read dice.cfg: %s", err)
+	}
+
+	defer cfgFile.Close()
+
+	// JSON struct
+	var diceCfg struct {
+		MaxCount int
+		MaxSide  int
+	}
+
+	// Read and parse json file
+	bytes, _ := ioutil.ReadAll(cfgFile)
+	err = json.Unmarshal(bytes, &diceCfg)
+	if err != nil {
+		return nil, fmt.Errorf("ERROR: Parse dice.cfg: %s", err)
+	}
+
+	d := &DiceHandler{}
+	d.maxDiceCount = diceCfg.MaxCount
+	d.maxDiceSide = diceCfg.MaxSide
+
+	d.initRegex()
+
+	fmt.Println("Dice are ready.")
+	return d, nil
+}
 
 // Init regex once for dice text checks
-func initDiceRegex() {
+func (d *DiceHandler) initRegex() {
 	// ^ : Start of the line
 	// (...) : Groups
 	// [0-9]* : Zero or more digits
@@ -20,13 +58,22 @@ func initDiceRegex() {
 	// (...)? : No match or only one match
 
 	// Example values: 1d20, d10, 2d12-2, 3d6 +5
-	diceRegex = regexp.MustCompile("^([0-9]*)d([0-9]+) *([+-]([0-9]+))?")
+	d.diceRegex = regexp.MustCompile("^([0-9]*)d([0-9]+) *([+-]([0-9]+))?")
+}
+
+func (d *DiceHandler) GetResponse(msg string) string {
+	// Does the message have any dice text?
+	if dice, side, addition := d.getDice(msg); dice > 0 {
+		return d.rollDice(dice, side, addition)
+	}
+
+	return ""
 }
 
 // Check if the message is valid dice text
 // Return count, side and addition if these are available
-func checkMessageForDice(msg string) (count int, side int, addition int) {
-	parts := diceRegex.FindStringSubmatch(msg)
+func (d *DiceHandler) getDice(msg string) (count int, side int, addition int) {
+	parts := d.diceRegex.FindStringSubmatch(msg)
 
 	// parts[0]: Full match
 	// parts[1]: dice count (set 1 if empty)
@@ -50,13 +97,13 @@ func checkMessageForDice(msg string) (count int, side int, addition int) {
 }
 
 // Roll dice and generate the output message
-func rollDice(count int, side int, addition int) string {
+func (d *DiceHandler) rollDice(count int, side int, addition int) string {
 	// Check the limits (config/dice.json)
-	if count > maxDiceCount {
+	if count > d.maxDiceCount {
 		return fmt.Sprintf("Sorry, I don't have %d dice.", count)
 	}
 
-	if side > maxDiceSide || side < 1 {
+	if side > d.maxDiceSide || side < 1 {
 		return fmt.Sprintf("Sorry, I don't have any %d sided dice.", side)
 	}
 

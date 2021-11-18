@@ -14,8 +14,6 @@ import (
 const imageSearchUrl = "https://www.googleapis.com/customsearch/v1?key=%s&searchType=image&cx=%s&q=%s"
 const imageMaxCount = 10 // API returns 10 at max
 
-var googleToken, googleCx string
-
 type imageResponse struct {
 	Items []imageItem
 }
@@ -25,8 +23,8 @@ type imageItem struct {
 }
 
 // If response begins with %%, Babür can do some calculations to respond
-// This function get fullMsg as parameter. It is useless for now, but it can be used in future (maybe image search?)
-func specialResponse(specialType string, fullMsg string) string {
+// This function get msg as parameter. It is useless for now, but it can be used in future (maybe image search?)
+func (c *ChatHandler) specialResponse(specialType string, msg string) string {
 	switch specialType {
 	case "randomNumber":
 		luckyNumber := rand.Intn(500000)
@@ -42,16 +40,16 @@ func specialResponse(specialType string, fullMsg string) string {
 		}
 	case "imageSearch":
 		// If token or cx is not defined, image search will not work
-		if googleToken == "" || googleCx == "" {
+		if c.googleToken == "" || c.googleCx == "" {
 			return ""
 		}
 
 		// Prepare text for query
-		fullMsg = strings.Trim(fullMsg, " .?-")
-		fullMsg = url.QueryEscape(fullMsg)
+		msg = strings.Trim(msg, " .?-")
+		msg = url.QueryEscape(msg)
 
 		// Do the search request
-		url := fmt.Sprintf(imageSearchUrl, googleToken, googleCx, fullMsg)
+		url := fmt.Sprintf(imageSearchUrl, c.googleToken, c.googleCx, msg)
 		resp, err := http.Get(url)
 		if err != nil {
 			fmt.Println("ERROR: Image search request: ", err)

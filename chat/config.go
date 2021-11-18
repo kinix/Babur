@@ -10,8 +10,8 @@ import (
 	"regexp"
 )
 
-func initAnswerConfig() error {
-	cfgFile, err := os.Open("config/chat.json")
+func (c *ChatHandler) initAnswerConfig(configFile string) error {
+	cfgFile, err := os.Open(configFile)
 	if err != nil {
 		return fmt.Errorf("ERROR: Read chat.cfg: %s", err)
 	}
@@ -20,7 +20,7 @@ func initAnswerConfig() error {
 
 	// Read and parse json file
 	bytes, _ := ioutil.ReadAll(cfgFile)
-	err = json.Unmarshal(bytes, &answerList)
+	err = json.Unmarshal(bytes, &c.answerList)
 	if err != nil {
 		return fmt.Errorf("ERROR: Parse chat.cfg: %s", err)
 	}
@@ -28,8 +28,8 @@ func initAnswerConfig() error {
 	return nil
 }
 
-func initRegexConfig() error {
-	cfgFile, err := os.Open("config/chat_regex.json")
+func (c *ChatHandler) initRegexConfig(configFile string) error {
+	cfgFile, err := os.Open(configFile)
 	if err != nil {
 		return fmt.Errorf("ERROR: Read chat_regex.cfg: %s", err)
 	}
@@ -45,26 +45,26 @@ func initRegexConfig() error {
 		return fmt.Errorf("ERROR: Parse chat_regex.cfg: %s", err)
 	}
 
-	regexList = map[string]*regexp.Regexp{}
+	c.regexList = map[string]*regexp.Regexp{}
 	for key, value := range regexConfig {
-		regexList[key] = regexp.MustCompile(value)
+		c.regexList[key] = regexp.MustCompile(value)
 	}
 
 	return nil
 }
 
-func validateConfig() error {
-	for key := range regexList {
-		if _, found := answerList[key]; !found {
+func (c *ChatHandler) validateConfig() error {
+	for key := range c.regexList {
+		if _, found := c.answerList[key]; !found {
 			return fmt.Errorf("ERROR: Answer key is not found: %s", key)
 		}
 	}
 
-	if _, found := answerList["_"]; !found {
+	if _, found := c.answerList["_"]; !found {
 		return errors.New("ERROR: Answer key is not found: _")
 	}
 
-	if _, found := answerList["_?"]; !found {
+	if _, found := c.answerList["_?"]; !found {
 		return errors.New("ERROR: Answer key is not found: _?")
 	}
 

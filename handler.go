@@ -1,48 +1,25 @@
 package main
 
 import (
-	"babur/chat"
 	"fmt"
-	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
 
-func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+type Handler interface {
+	GetResponse(msg string) string
+}
+
+func (babur *Bot) MessageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore messages from the bot itself
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
 
-	// If some one mentioned Babür
-	if strings.Contains(m.Message.Content, s.State.User.ID) {
-		// Use chat (maybe we can add more language in future. maybe...)
-		msg := strings.ReplaceAll(m.Message.Content, "<@!"+s.State.User.ID+">", "")
-		if content := chat.ChatHandler(m.Author.ID, msg); content != "" {
+	for _, handler := range babur.handlers {
+		if content := handler.GetResponse(m.Message.Content); content != "" {
 			sendMessage(s, m, content)
-			return
 		}
-	}
-
-	// Does the message have any dice text?
-	if dice, side, addition := checkMessageForDice(m.Message.Content); dice > 0 {
-		content := rollDice(dice, side, addition)
-		sendMessage(s, m, content)
-		return
-	}
-
-	// Does the message have any unit?
-	if measurements := checkMessageForConverting(m.Message.Content); len(measurements) > 0 {
-		content := convertUnits(measurements)
-		sendMessage(s, m, content)
-		return
-	}
-
-	// Does the message start with !dnd
-	if len(m.Message.Content) > 5 && m.Message.Content[0:5] == "!dnd " {
-		content := searchDnd(m.Message.Content[5:])
-		sendMessage(s, m, content)
-		return
 	}
 }
 

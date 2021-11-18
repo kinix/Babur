@@ -1,6 +1,10 @@
 package main
 
 import (
+	"babur/chat"
+	"babur/converter"
+	"babur/dice"
+	"babur/urlSearch"
 	"fmt"
 	"math/rand"
 	"os"
@@ -11,33 +15,23 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var token string
+type Bot struct {
+	token    string
+	handlers []Handler
+}
+
+var babur *Bot
 
 func init() {
-	token = os.Getenv("BABUR_TOKEN")
-
-	// Read dice configs from dice.json
-	if err := initDiceConfig(); err != nil {
-		// Exit if the config is broken
-		panic(err)
-	}
-
-	// Read converter configs from units.json
-	if err := initUnitConfig(); err != nil {
-		// Exit if the config is broken
-		panic(err)
-	}
-
-	initDiceRegex()
-	initUnitRegex()
-	initDndRegex()
+	babur = &Bot{}
+	babur.token = os.Getenv("BABUR_TOKEN")
 
 	// Seed random to avoid same results
 	rand.Seed(time.Now().UnixNano())
 }
 
 func main() {
-	session, err := discordgo.New("Bot " + token)
+	session, err := discordgo.New("Bot " + babur.token)
 	if err != nil {
 		fmt.Println("ERROR: Create bot: ", err)
 		return
@@ -54,8 +48,30 @@ func main() {
 		return
 	}
 
-	// Event handler
-	session.AddHandler(messageHandler)
+	// Add handlers
+	var convertHandler, diceHandler, dndHandler, chatHandler Handler
+
+	if convertHandler, err = converter.NewConverterHandler("config/units.json"); err != nil {
+		panic(err)
+	}
+
+	if diceHandler, err = dice.NewDiceHandler("config/dice.json"); err != nil {
+		panic(err)
+	}
+
+	if dndHandler, err = urlSearch.NewUrlSearchHandler("!dnd", "http://dnd5e.wikidot.com/search:site/q/%s", "<div class=\"url\">([^<]+)"); err != nil {
+		panic(err)
+	}
+
+	if chatHandler, err = chat.NewChatHandler(session.State.User.ID, "config/chat.json", "config/chat_regex.json"); err != nil {
+		panic(err)
+	}
+
+	babur.handlers = []Handler{convertHandler, diceHandler, dndHandler, chatHandler}
+
+	babur.handlers = append(babur.handlers)
+
+	session.AddHandler(babur.MessageHandler)
 
 	fmt.Println("Babur is ready.")
 

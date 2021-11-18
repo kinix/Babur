@@ -1,20 +1,22 @@
-package main
+package converter
 
 import "testing"
 
-func initConvertTest() {
-	units = map[string]Unit{
+func initConvertTest() *ConverterHandler {
+	c := &ConverterHandler{}
+	c.units = map[string]Unit{
 		"feet": {"cm", 30.48},
 		"ft":   {"cm", 30.48},
 		"_cm":  {"m", 0.01},
 		"_m":   {"km", 0.001},
 	}
 
-	initUnitRegex()
+	c.initRegex()
+	return c
 }
 
 func TestCheckMessageForConverting(t *testing.T) {
-	initConvertTest()
+	c := initConvertTest()
 
 	type testCase struct {
 		input  string
@@ -42,7 +44,7 @@ func TestCheckMessageForConverting(t *testing.T) {
 	}
 
 	for _, test := range testCases {
-		results := checkMessageForConverting(test.input)
+		results := c.getUnits(test.input)
 		for i, result := range results {
 			if result != test.output[i] {
 				t.Errorf("For %s, %v is expected but %v is returned.", test.input, test.output[i], result)
@@ -52,7 +54,7 @@ func TestCheckMessageForConverting(t *testing.T) {
 }
 
 func TestConvertUnits(t *testing.T) {
-	initConvertTest()
+	c := initConvertTest()
 
 	type testCase struct {
 		input  []rawMeasurement
@@ -76,18 +78,18 @@ func TestConvertUnits(t *testing.T) {
 	}
 
 	for _, test := range testCases {
-		if result := convertUnits(test.input); result != test.output {
+		if result := c.convertUnits(test.input); result != test.output {
 			t.Errorf("For %v, %s is expected but %s is returned.", test.input, test.output, result)
 		}
 	}
 }
 
 func BenchmarkCheckMessageForConverting(b *testing.B) {
-	initConvertTest()
+	c := initConvertTest()
 
 	b.Run("Invalid short text", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			checkMessageForConverting("Convert")
+			c.getUnits("Convert")
 		}
 	})
 
@@ -98,13 +100,13 @@ func BenchmarkCheckMessageForConverting(b *testing.B) {
 		}
 
 		for i := 0; i < b.N; i++ {
-			checkMessageForConverting(text)
+			c.getUnits(text)
 		}
 	})
 
 	b.Run("Single valid short text", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			checkMessageForConverting("10 feet")
+			c.getUnits("10 feet")
 		}
 	})
 
@@ -116,7 +118,7 @@ func BenchmarkCheckMessageForConverting(b *testing.B) {
 		text += "10 feet"
 
 		for i := 0; i < b.N; i++ {
-			checkMessageForConverting(text)
+			c.getUnits(text)
 		}
 	})
 
@@ -128,17 +130,17 @@ func BenchmarkCheckMessageForConverting(b *testing.B) {
 		text += "10 feet"
 
 		for i := 0; i < b.N; i++ {
-			checkMessageForConverting(text)
+			c.getUnits(text)
 		}
 	})
 }
 
 func BenchmarkConvertUnits(b *testing.B) {
-	initConvertTest()
+	c := initConvertTest()
 
 	b.Run("Single simple", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			convertUnits([]rawMeasurement{
+			c.convertUnits([]rawMeasurement{
 				{1, "feet"},
 			})
 		}
@@ -151,13 +153,13 @@ func BenchmarkConvertUnits(b *testing.B) {
 		}
 
 		for i := 0; i < b.N; i++ {
-			convertUnits(list)
+			c.convertUnits(list)
 		}
 	})
 
 	b.Run("Single big", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			convertUnits([]rawMeasurement{
+			c.convertUnits([]rawMeasurement{
 				{1000000, "feet"},
 			})
 		}
@@ -170,7 +172,7 @@ func BenchmarkConvertUnits(b *testing.B) {
 		}
 
 		for i := 0; i < b.N; i++ {
-			convertUnits(list)
+			c.convertUnits(list)
 		}
 	})
 }

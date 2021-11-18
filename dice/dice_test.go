@@ -1,16 +1,19 @@
-package main
+package dice
 
 import "testing"
 
-func initDiceTest() {
-	maxDiceCount = 10
-	maxDiceSide = 100
+func initDiceTest() *DiceHandler {
+	d := &DiceHandler{}
 
-	initDiceRegex()
+	d.maxDiceCount = 10
+	d.maxDiceSide = 100
+
+	d.initRegex()
+	return d
 }
 
 func TestCheckMessageForDice(t *testing.T) {
-	initDiceTest()
+	d := initDiceTest()
 
 	type testCase struct {
 		input  string
@@ -27,7 +30,7 @@ func TestCheckMessageForDice(t *testing.T) {
 
 	var result [3]int
 	for _, test := range testCases {
-		if result[0], result[1], result[2] = checkMessageForDice(test.input); result != test.output {
+		if result[0], result[1], result[2] = d.getDice(test.input); result != test.output {
 			t.Errorf("For %s, %v is expected but %v is returned.", test.input, test.output, result)
 		}
 	}
@@ -35,7 +38,7 @@ func TestCheckMessageForDice(t *testing.T) {
 
 // TODO: Add tests for random dice
 func TestRollDice(t *testing.T) {
-	initDiceTest()
+	d := initDiceTest()
 
 	type testCase struct {
 		input  [3]int
@@ -49,18 +52,18 @@ func TestRollDice(t *testing.T) {
 	}
 
 	for _, test := range testCases {
-		if result := rollDice(test.input[0], test.input[1], test.input[2]); result != test.output {
+		if result := d.rollDice(test.input[0], test.input[1], test.input[2]); result != test.output {
 			t.Errorf("For %v, %s is expected but %s is returned.", test.input, test.output, result)
 		}
 	}
 }
 
 func BenchmarkCheckMessageForDice(b *testing.B) {
-	initDiceTest()
+	d := initDiceTest()
 
 	b.Run("Invalid short text", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			checkMessageForDice("Roll")
+			d.getDice("Roll")
 		}
 	})
 
@@ -71,41 +74,41 @@ func BenchmarkCheckMessageForDice(b *testing.B) {
 		}
 
 		for i := 0; i < b.N; i++ {
-			checkMessageForDice(text)
+			d.getDice(text)
 		}
 	})
 
 	b.Run("Valid text", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			checkMessageForDice("8d20 +1")
+			d.getDice("8d20 +1")
 		}
 	})
 }
 
 func BenchmarkRollDice(b *testing.B) {
-	initDiceTest()
+	d := initDiceTest()
 
 	b.Run("1d20", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			rollDice(1, 2, 0)
+			d.rollDice(1, 2, 0)
 		}
 	})
 
 	b.Run("2d20", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			rollDice(2, 20, 0)
+			d.rollDice(2, 20, 0)
 		}
 	})
 
 	b.Run("8d20", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			rollDice(8, 2, 0)
+			d.rollDice(8, 2, 0)
 		}
 	})
 
 	b.Run("8d20 +6", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			rollDice(8, 2, 6)
+			d.rollDice(8, 2, 6)
 		}
 	})
 }
