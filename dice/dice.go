@@ -58,7 +58,7 @@ func (d *DiceHandler) initRegex() {
 	// (...)? : No match or only one match
 
 	// Example values: 1d20, d10, 2d12-2, 3d6 +5
-	d.diceRegex = regexp.MustCompile("^([0-9]*)d([0-9]+) *([+-]([0-9]+))?")
+	d.diceRegex = regexp.MustCompile("^([0-9]*)(?:d|D)([0-9]+) *([+-]([0-9]+))?")
 }
 
 func (d *DiceHandler) GetResponse(msg string) string {
