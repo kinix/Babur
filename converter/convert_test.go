@@ -15,7 +15,44 @@ func initConvertTest() *ConverterHandler {
 	return c
 }
 
-func TestCheckMessageForConverting(t *testing.T) {
+func TestNewConverterHandler(t *testing.T) {
+	if _, err := NewConverterHandler("../config/units.json"); err != nil {
+		t.Errorf("Error: %s", err)
+	}
+
+	if _, err := NewConverterHandler("../config/none.json"); err == nil {
+		t.Errorf("Error is expected for missing file but no error returned")
+	}
+
+	if _, err := NewConverterHandler("../config/dice.json"); err == nil {
+		t.Errorf("Error is expected for wrong file format but no error returned")
+	}
+}
+
+func TestGetResponse(t *testing.T) {
+	c := initConvertTest()
+
+	type testCase struct {
+		input  string
+		output string
+	}
+
+	testCases := []testCase{
+		{"10 feet", "```10 feet = 3.05 m```"},
+		{"10 ft", "```10 ft = 3.05 m```"},
+		{"10ft", "```10 ft = 3.05 m```"},
+		{"something else", ""},
+	}
+
+	for _, test := range testCases {
+		result := c.GetResponse(test.input)
+		if result != test.output {
+			t.Errorf("For %s, %s is expected but %s is returned.", test.input, test.output, result)
+		}
+	}
+}
+
+func TestGetUnits(t *testing.T) {
 	c := initConvertTest()
 
 	type testCase struct {

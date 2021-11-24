@@ -1,6 +1,9 @@
 package dice
 
-import "testing"
+import (
+	"regexp"
+	"testing"
+)
 
 func initDiceTest() *DiceHandler {
 	d := &DiceHandler{}
@@ -12,7 +15,53 @@ func initDiceTest() *DiceHandler {
 	return d
 }
 
-func TestCheckMessageForDice(t *testing.T) {
+func TestNewDiceHandler(t *testing.T) {
+	if _, err := NewDiceHandler("../config/dice.json"); err != nil {
+		t.Errorf("Error: %s", err)
+	}
+
+	if _, err := NewDiceHandler("../config/none.json"); err == nil {
+		t.Errorf("Error is expected for missing file but no error returned")
+	}
+
+	if _, err := NewDiceHandler("../config/units.json"); err == nil {
+		t.Errorf("Error is expected for wrong file format but no error returned")
+	}
+
+	// TODO: Test for unrmashal errors
+}
+
+func TestGetResponse(t *testing.T) {
+	c := initDiceTest()
+
+	type testCase struct {
+		input string
+		regex string
+	}
+
+	testCases := []testCase{
+		{"1d8", "> Total: [1-8]\n```\\[[1-8]\\]```"},
+		{"2d4", "> Total: [1-8]\tDisadvantage: [1-4]\tAdvantage: [1-4]\n```\\[[1-4] [1-4]\\]```"},
+		{"3d1", "> Total: 3\n```\\[1 1 1\\]```"},
+		{"d0", "Sorry, I don't have any 0 sided dice."},
+		{"something else", ""},
+	}
+
+	for _, test := range testCases {
+		// Repeat tests because random results can cause problems
+		for i := 0; i < 100; i++ {
+			result := c.GetResponse(test.input)
+			regex := regexp.MustCompile(test.regex)
+
+			if !regex.MatchString(result) {
+				t.Errorf("For %s, response format is not matched: %s", test.input, result)
+				continue
+			}
+		}
+	}
+}
+
+func TestGetDice(t *testing.T) {
 	d := initDiceTest()
 
 	type testCase struct {
