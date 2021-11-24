@@ -69,8 +69,6 @@ func main() {
 
 	babur.handlers = []Handler{convertHandler, diceHandler, dndHandler, chatHandler}
 
-	babur.handlers = append(babur.handlers)
-
 	session.AddHandler(babur.MessageHandler)
 
 	fmt.Println("Babur is ready.")
