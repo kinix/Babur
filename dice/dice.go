@@ -34,8 +34,8 @@ func NewDiceHandler(configFile string) (*DiceHandler, error) {
 	// Read and parse json file
 	bytes, _ := ioutil.ReadAll(cfgFile)
 	err = json.Unmarshal(bytes, &diceCfg)
-	if err != nil {
-		return nil, fmt.Errorf("ERROR: Parse dice.cfg: %s", err)
+	if err != nil || diceCfg.MaxCount == 0 || diceCfg.MaxSide == 0 {
+		return nil, fmt.Errorf("ERROR: Max count (%d) and max side (%d) should be a positive integer", diceCfg.MaxCount, diceCfg.MaxSide)
 	}
 
 	d := &DiceHandler{}
