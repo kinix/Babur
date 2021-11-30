@@ -1,16 +1,17 @@
 package main
 
 import (
-	"babur/chat"
-	"babur/converter"
-	"babur/dice"
-	"babur/urlSearch"
 	"fmt"
 	"math/rand"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/kinix/babur/chat"
+	"github.com/kinix/babur/converter"
+	"github.com/kinix/babur/dice"
+	"github.com/kinix/babur/urlSearch"
 
 	"github.com/bwmarrin/discordgo"
 )
