@@ -53,6 +53,6 @@
         {"weight": 1, "response": "Anlamadım :cry:"},
         {"weight": 1, "response": "Anlayamadım :cry:"},
         {"weight": 1, "response": "Sorunu anlayamadım :cry:"},
-        {"weight": 10, "response": "%%imageSearch"}
+        {"weight": 50, "response": "%%imageSearch"}
     ]
 }
