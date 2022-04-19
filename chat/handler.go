@@ -10,7 +10,7 @@ import (
 )
 
 type ChatHandler struct {
-	botMention string
+	botMention []string
 
 	regexList  map[string]*regexp.Regexp
 	answerList map[string][]answer
@@ -53,7 +53,10 @@ func NewChatHandler(botId, answerConfigFile, regexConfigFile string) (*ChatHandl
 	c.googleToken = os.Getenv("GOOGLE_TOKEN")
 	c.googleCx = os.Getenv("GOOGLE_CX")
 
-	c.botMention = "<@!" + botId + ">"
+	c.botMention = []string{
+		"<@" + botId + ">",
+		"<@!" + botId + ">",
+	}
 
 	fmt.Println("Chat is ready.")
 	return c, nil
@@ -62,10 +65,16 @@ func NewChatHandler(botId, answerConfigFile, regexConfigFile string) (*ChatHandl
 // Answer some question in Turkish
 func (c *ChatHandler) GetResponse(msg string) string {
 	// Does the message contain mention to Babur
-	if strings.Contains(msg, c.botMention) {
-		// Remove mention part
-		msg = strings.ReplaceAll(msg, c.botMention, "")
-	} else {
+	mentioned := false
+	for _, botMention := range c.botMention {
+		if strings.Contains(msg, botMention) {
+			// Remove mention part
+			msg = strings.ReplaceAll(msg, botMention, "")
+			mentioned = true
+		}
+	}
+
+	if !mentioned {
 		return ""
 	}
 
