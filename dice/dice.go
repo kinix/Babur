@@ -1,55 +1,23 @@
 package dice
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"math/rand"
-	"os"
 	"regexp"
 	"strconv"
 )
 
+const (
+	maxDiceCount = 100
+	maxDiceSide  = 1000000
+)
+
 type DiceHandler struct {
-	maxDiceCount int
-	maxDiceSide  int
-	diceRegex    *regexp.Regexp
-}
-
-func NewDiceHandler(configFile string) (*DiceHandler, error) {
-	// Open config file
-	cfgFile, err := os.Open(configFile)
-	if err != nil {
-		return nil, fmt.Errorf("ERROR: Read dice.cfg: %s", err)
-	}
-
-	defer cfgFile.Close()
-
-	// JSON struct
-	var diceCfg struct {
-		MaxCount int
-		MaxSide  int
-	}
-
-	// Read and parse json file
-	bytes, _ := ioutil.ReadAll(cfgFile)
-	err = json.Unmarshal(bytes, &diceCfg)
-	if err != nil || diceCfg.MaxCount == 0 || diceCfg.MaxSide == 0 {
-		return nil, fmt.Errorf("ERROR: Max count (%d) and max side (%d) should be a positive integer", diceCfg.MaxCount, diceCfg.MaxSide)
-	}
-
-	d := &DiceHandler{}
-	d.maxDiceCount = diceCfg.MaxCount
-	d.maxDiceSide = diceCfg.MaxSide
-
-	d.initRegex()
-
-	fmt.Println("Dice are ready.")
-	return d, nil
+	diceRegex *regexp.Regexp
 }
 
 // Init regex once for dice text checks
-func (d *DiceHandler) initRegex() {
+func (d *DiceHandler) InitRegex() {
 	// ^ : Start of the line
 	// (...) : Groups
 	// [0-9]* : Zero or more digits
@@ -99,11 +67,11 @@ func (d *DiceHandler) getDice(msg string) (count int, side int, addition int) {
 // Roll dice and generate the output message
 func (d *DiceHandler) rollDice(count int, side int, addition int) string {
 	// Check the limits (config/dice.json)
-	if count > d.maxDiceCount {
+	if count > maxDiceCount {
 		return fmt.Sprintf("Sorry, I don't have %d dice.", count)
 	}
 
-	if side > d.maxDiceSide || side < 1 {
+	if side > maxDiceSide || side < 1 {
 		return fmt.Sprintf("Sorry, I don't have any %d sided dice.", side)
 	}
 

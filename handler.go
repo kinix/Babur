@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -11,6 +12,11 @@ type Handler interface {
 }
 
 func (babur *Bot) MessageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	// Ignore messages from the bot itself
+	if m.Author.ID == s.State.User.ID {
+		return
+	}
+
 	// Log messages
 	if len(m.Message.Content) > 120 {
 		fmt.Printf("MSG: %s ...\n", m.Message.Content[:120])
@@ -18,15 +24,27 @@ func (babur *Bot) MessageHandler(s *discordgo.Session, m *discordgo.MessageCreat
 		fmt.Printf("MSG: %s\n", m.Message.Content)
 	}
 
-	// Ignore messages from the bot itself
-	if m.Author.ID == s.State.User.ID {
+	// try to roll dice
+	if response := babur.dice.GetResponse(m.Message.Content); response != "" {
+		sendMessage(s, m, response)
 		return
 	}
 
-	for _, handler := range babur.handlers {
-		if content := handler.GetResponse(m.Message.Content); content != "" {
-			sendMessage(s, m, content)
+	// llm conversation
+	if strings.Contains(m.Message.Content, babur.botId) {
+		answer, err := babur.llm.Question(m.Message.Content)
+
+		if err != nil {
+			sendMessage(s, m, err.Error())
+			return
 		}
+
+		if answer == "" {
+			return
+		}
+
+		sendMessage(s, m, answer)
+		return
 	}
 }
 

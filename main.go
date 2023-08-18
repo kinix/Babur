@@ -5,34 +5,38 @@ import (
 	"math/rand"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
-	"github.com/kinix/babur/chat"
-	"github.com/kinix/babur/converter"
-	"github.com/kinix/babur/dice"
-	"github.com/kinix/babur/urlSearch"
-
 	"github.com/bwmarrin/discordgo"
+	"github.com/joho/godotenv"
+	"github.com/kinix/babur/dice"
+	"github.com/kinix/babur/llmchat"
 )
 
 type Bot struct {
-	token    string
-	handlers []Handler
+	llm         *llmchat.LLMClient
+	dice        *dice.DiceHandler
+	Temperature int
+	botId       string
 }
 
 var babur *Bot
 
-func init() {
+func main() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		fmt.Println("ERROR: Load .env file: ", err)
+		return
+	}
+
 	babur = &Bot{}
-	babur.token = os.Getenv("BABUR_TOKEN")
 
 	// Seed random to avoid same results
 	rand.Seed(time.Now().UnixNano())
-}
 
-func main() {
-	session, err := discordgo.New("Bot " + babur.token)
+	session, err := discordgo.New("Bot " + os.Getenv("BABUR_TOKEN"))
 	if err != nil {
 		fmt.Println("ERROR: Create bot: ", err)
 		return
@@ -49,28 +53,19 @@ func main() {
 		return
 	}
 
-	// Add handlers
-	var convertHandler, diceHandler, dndHandler, chatHandler Handler
-
-	if convertHandler, err = converter.NewConverterHandler("config/units.json"); err != nil {
-		panic(err)
+	temp, err := strconv.Atoi(os.Getenv("OPENAI_API_TEMPERATURE"))
+	if err != nil {
+		fmt.Println("ERROR: temperature: ", err)
+		temp = 5
 	}
 
-	if diceHandler, err = dice.NewDiceHandler("config/dice.json"); err != nil {
-		panic(err)
-	}
-
-	if dndHandler, err = urlSearch.NewUrlSearchHandler("!dnd", "http://dnd5e.wikidot.com/search:site/q/%s", "<div class=\"url\">([^<]+)"); err != nil {
-		panic(err)
-	}
-
-	if chatHandler, err = chat.NewChatHandler(session.State.User.ID, "config/chat.json", "config/chat_regex.json"); err != nil {
-		panic(err)
-	}
-
-	babur.handlers = []Handler{convertHandler, diceHandler, dndHandler, chatHandler}
+	babur.botId = session.State.User.ID
+	babur.llm = llmchat.NewClient(os.Getenv("OPENAI_VERSION"), temp)
 
 	session.AddHandler(babur.MessageHandler)
+
+	babur.dice = &dice.DiceHandler{}
+	babur.dice.InitRegex()
 
 	fmt.Println("Babur is ready.")
 

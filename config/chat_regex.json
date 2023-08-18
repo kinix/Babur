@@ -1,7 +1,0 @@
-{
-    "yesNo": ".* (mı|mi|mu|mü).*\\?",
-    "count": ".*(kaç).*\\?",
-    "purpose": ".*((ne|hangi|kim).*(yap|amacın|sen)|(yap|amacın|sen).*(ne|hangi|kim)).*\\?",
-    "thanks": ".*(sağol|teşekkür|seviyo|eyvallah)[^\\?]*$",
-    "dolar": ".*(dolar|usd|döviz|ekonomi|para).*"
-}
